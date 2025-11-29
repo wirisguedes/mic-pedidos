@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pedidos.controller.dto.NovoPedidoDTO;
 import pedidos.controller.mappers.PedidoMapper;
+import pedidos.model.ErroResposta;
+import pedidos.model.exception.ValidationException;
 import pedidos.service.PedidoService;
 
 @RestController
@@ -23,9 +25,14 @@ public class PedidoController {
     @PostMapping
     public ResponseEntity<Object> criar(@RequestBody NovoPedidoDTO dto) {
 
-        var pedido =  mapper.map(dto);
-        var novoPedido = pedidoService.criar(pedido);
-        return ResponseEntity.ok(novoPedido.getCodigo());
+        try {
+            var pedido =  mapper.map(dto);
+            var novoPedido = pedidoService.criar(pedido);
+            return ResponseEntity.ok(novoPedido.getCodigo());
+        } catch (ValidationException e) {
+          var erro = new ErroResposta("Erro de validação", e.getField(), e.getMessage());
+            return ResponseEntity.badRequest().body(erro);
+        }
 
     }
 
