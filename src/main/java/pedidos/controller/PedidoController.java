@@ -1,0 +1,33 @@
+package pedidos.controller;
+
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import pedidos.controller.dto.NovoPedidoDTO;
+import pedidos.controller.mappers.PedidoMapper;
+import pedidos.service.PedidoService;
+
+@RestController
+@RequestMapping("pedidos")
+@RequiredArgsConstructor
+public class PedidoController {
+
+
+    private final PedidoService pedidoService;
+    private final PedidoMapper mapper;
+
+    @PostMapping
+    public ResponseEntity<Object> criar(@RequestBody NovoPedidoDTO dto) {
+
+        var pedido =  mapper.map(dto);
+        var novoPedido = pedidoService.criar(pedido);
+        return ResponseEntity.ok(novoPedido.getCodigo());
+
+    }
+
+
+}
