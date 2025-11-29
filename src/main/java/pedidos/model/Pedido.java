@@ -17,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 public class Pedido {
 
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long codigo;
 
@@ -52,3 +53,4 @@ public class Pedido {
     private List<ItemPedido> itens;
 
 }
+
