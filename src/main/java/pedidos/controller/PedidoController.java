@@ -3,16 +3,15 @@ package pedidos.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pedidos.controller.dto.AdicaoNovoPagamentoDTO;
 import pedidos.controller.dto.NovoPedidoDTO;
 import pedidos.controller.mappers.PedidoMapper;
 import pedidos.model.ErroResposta;
 import pedidos.model.exception.ItemNaoEncontradoException;
 import pedidos.model.exception.ValidationException;
+import pedidos.publisher.DetalhePedidoMapper;
+import pedidos.publisher.representation.DetalhePedidoRepresentation;
 import pedidos.service.PedidoService;
 
 @RestController
@@ -23,6 +22,7 @@ public class PedidoController {
 
     private final PedidoService pedidoService;
     private final PedidoMapper mapper;
+    private final DetalhePedidoMapper detalhePedidoMapper;
 
     @PostMapping
     public ResponseEntity<Object> criar(@RequestBody NovoPedidoDTO dto) {
@@ -52,5 +52,13 @@ public class PedidoController {
     }
 
 
+    @GetMapping("{codigo}")
+    public ResponseEntity<DetalhePedidoRepresentation> obterDetalhesDoPedido(@PathVariable Long codigo) {
+        return pedidoService
+                .carregarDadosCompletosPedido(codigo)
+                .map(detalhePedidoMapper::map)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
 }
