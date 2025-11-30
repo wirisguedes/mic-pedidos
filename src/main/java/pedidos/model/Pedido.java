@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pedidos.client.representation.ClienteRepresentation;
 import pedidos.model.enums.StatusPedido;
 
 import java.math.BigDecimal;
@@ -51,6 +52,9 @@ public class Pedido {
 
     @OneToMany(mappedBy = "pedido")
     private List<ItemPedido> itens;
+
+    @Transient
+    private ClienteRepresentation dadosCliente;
 
 }
 
