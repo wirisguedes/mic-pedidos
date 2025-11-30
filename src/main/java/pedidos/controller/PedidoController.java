@@ -7,9 +7,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pedidos.controller.dto.AdicaoNovoPagamentoDTO;
 import pedidos.controller.dto.NovoPedidoDTO;
 import pedidos.controller.mappers.PedidoMapper;
 import pedidos.model.ErroResposta;
+import pedidos.model.exception.ItemNaoEncontradoException;
 import pedidos.model.exception.ValidationException;
 import pedidos.service.PedidoService;
 
@@ -35,6 +37,20 @@ public class PedidoController {
         }
 
     }
+
+    @PostMapping("pagamentos")
+    public ResponseEntity<Object> adicionarNovoPagamento(@RequestBody AdicaoNovoPagamentoDTO dto) {
+
+        try {
+
+            pedidoService.adicionarNovoPagamento(dto.codigoPedido(), dto.dados(), dto.tipoPagamento());
+            return ResponseEntity.noContent().build();
+        } catch (ItemNaoEncontradoException e) {
+            var erro = new ErroResposta("Item não encontrado", "codigoPedido", e.getMessage());
+            return ResponseEntity.badRequest().body(erro);
+        }
+    }
+
 
 
 }
