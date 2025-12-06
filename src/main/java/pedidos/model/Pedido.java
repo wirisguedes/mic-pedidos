@@ -31,20 +31,20 @@ public class Pedido {
     @Column(name = "total", precision = 16, scale = 2)
     private BigDecimal total;
 
-    @Column(name = "chave_pagamento")
+    @Column(name = "chave_pagamento", length = 500)
     private String chavePagamento;
 
-    @Column(name = "observacoes")
+    @Column(name = "observacoes", length = 1000)
     private String observacoes;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private StatusPedido status;
 
-    @Column(name = "codigo_rastreio")
+    @Column(name = "codigo_rastreio", length = 500)
     private String codigoRastreio;
 
-    @Column(name = "url_nf")
+    @Column(name = "url_nf", length = 1000)
     private String urlNotaFiscal;
 
     @Transient

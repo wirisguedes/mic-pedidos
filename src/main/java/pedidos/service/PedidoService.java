@@ -2,7 +2,6 @@ package pedidos.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import pedidos.client.ClientesClient;
@@ -14,6 +13,7 @@ import pedidos.model.Pedido;
 import pedidos.model.enums.StatusPedido;
 import pedidos.model.enums.TipoPagamento;
 import pedidos.model.exception.ItemNaoEncontradoException;
+import pedidos.publisher.PagamentoPublisher;
 import pedidos.repository.ItemPedidoRepository;
 import pedidos.repository.PedidoRepository;
 import pedidos.validator.PedidoValidator;
@@ -32,6 +32,7 @@ public class PedidoService {
     private final ServicoBancarioClient servicoBancarioClient;
     private final ClientesClient apiClientesClient;
     private final ProdutosClient apiProdutosClient;
+    private final PagamentoPublisher pagamentoPublisher;
 
     @Transactional
     public Pedido criar(Pedido pedido) {
@@ -65,14 +66,20 @@ public class PedidoService {
         Pedido pedido = pedidoEncontrado.get();
 
         if(sucesso){
-
-            pedido.setStatus(StatusPedido.PAGO);
+            prepararEPublicarPedidoPago(pedido);
         }else{
             pedido.setStatus(StatusPedido.ERRO_PAGAMENTO);
             pedido.setObservacoes(observacoes);
         }
 
         pedidoRepository.save(pedido);
+    }
+
+    private void prepararEPublicarPedidoPago(Pedido pedido) {
+        pedido.setStatus(StatusPedido.PAGO);
+        carregarDadosCliente(pedido);
+        carregarItensPedido(pedido);
+        pagamentoPublisher.publicar(pedido);
     }
 
     @Transactional
