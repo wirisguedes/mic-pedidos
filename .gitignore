@@ -31,3 +31,18 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Logs
+*.log
+logs/
+
+# Dumps
+*.sql
+*.dump
+
+# Docker volumes e dados
+
+# Arquivos temporários
+*.tmp
+*.swp
+
