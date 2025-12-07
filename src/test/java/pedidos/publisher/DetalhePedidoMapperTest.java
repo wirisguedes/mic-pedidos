@@ -26,7 +26,7 @@ class DetalhePedidoMapperTest {
         pedido.setDataPedido(date);
         pedido.setTotal(new BigDecimal("99.90"));
         pedido.setStatus(StatusPedido.PAGO);
-        ClienteRepresentation cliente = new ClienteRepresentation(10L, "João", "12345678900", "Rua A", "12", "Bairro B", "joao@example.com", "99999-9999");
+        ClienteRepresentation cliente = new ClienteRepresentation(10L, "João", "12345678900", "Rua A", "12", "Bairro B", "joao@example.com", "99999-9999" , true);
         pedido.setDadosCliente(cliente);
         pedido.setItens(List.of());
 
